@@ -12,13 +12,18 @@ const LogInForm = () => {
     console.log(data);
     const { email, password } = data;
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/login`, {
-        email,
-        password,
-      });
-    } catch (err) {
-      console.log(err);
-      alert('가입되지 않은 이메일이거나 잘못된 비밀번호 입니다');
+      const logInRequest = await axios.post(
+        `${process.env.REACT_APP_API_URL}/login`,
+        {
+          email,
+          password,
+        },
+      );
+      console.log(logInRequest);
+    } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data.message);
+      }
     }
   };
 

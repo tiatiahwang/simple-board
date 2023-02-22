@@ -1,7 +1,5 @@
-import LogInForm from '../Components/LogInForm';
-
 const Home = () => {
-  return <LogInForm />;
+  return <div>홈화면</div>;
 };
 
 export default Home;

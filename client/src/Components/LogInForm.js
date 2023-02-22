@@ -1,4 +1,5 @@
 import axios from 'axios';
+import CryptoJS, { enc } from 'crypto-js';
 import { useForm } from 'react-hook-form';
 
 const LogInForm = () => {
@@ -9,14 +10,18 @@ const LogInForm = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data);
     const { email, password } = data;
+    const encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify(password),
+      process.env.REACT_APP_SECRET_KEY,
+    ).toString();
+    console.log(encrypted);
     try {
       const logInRequest = await axios.post(
         `${process.env.REACT_APP_API_URL}/login`,
         {
           email,
-          password,
+          password: encrypted,
         },
       );
       console.log(logInRequest);

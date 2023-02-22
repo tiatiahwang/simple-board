@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { user } = require('../../models');
 
 module.exports = async (req, res) => {
@@ -9,21 +10,34 @@ module.exports = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const userFound = await user.findOne({
+    const existed = await user.findOne({
       where: { email },
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     });
 
     // 가입되어 있지 않는 이메일 인경우
-    if (!userFound) {
+    if (!existed) {
       return res
         .status(404)
         .json({ message: '가입 되어 있지 않은 이메일 입니다' });
     }
 
-    console.log(userFound);
+    const matched = await user.findOne({
+      where: { email, password },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
 
-    res.status(200).send('로그인 성공');
+    // 비밀번호가 틀린 경우
+    if (!matched) {
+      return res.status(404).json({ message: '비밀번호를 다시 확인해 주세요' });
+    }
+
+    const userInfo = matched.dataValues;
+    const accessToken = jwt.sign(userInfo, process.env.ACCESS_SECRET, {
+      expiresIn: '7d',
+    });
+
+    res.status(200).json({ accessToken, message: '로그인 성공' });
   } catch (e) {
     console.log(e);
   }

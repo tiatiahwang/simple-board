@@ -8,6 +8,7 @@ import Input from '../Components/auth/Input';
 import FormError from '../Components/auth/FormError';
 import Button from '../Components/auth/Button';
 import Seperator from '../Components/auth/Seperator';
+import { FatLink } from '../Components/shared';
 
 const LogIn = () => {
   const {
@@ -42,7 +43,7 @@ const LogIn = () => {
   return (
     <AuthLayout>
       <FormContainer>
-        <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             type='text'
             name='email'
@@ -83,7 +84,9 @@ const LogIn = () => {
           <FormError message={errors?.result?.message} />
         </form>
         <Seperator />
-        <Link to='/signup'>회원가입</Link>
+        <FatLink>
+          <Link to='/signup'>회원가입</Link>
+        </FatLink>
       </FormContainer>
     </AuthLayout>
   );

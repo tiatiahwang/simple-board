@@ -1,7 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../Components/auth/AuthLayout';
 import Button from '../Components/auth/Button';
 import FormContainer from '../Components/auth/FormContainer';
@@ -9,21 +8,41 @@ import FormError from '../Components/auth/FormError';
 import Input from '../Components/auth/Input';
 
 const SignUp = () => {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    getValues,
   } = useForm();
 
   const onSubmit = async (data) => {
     console.log(data);
+    const { email, nickname, password } = data;
+    const encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify(password),
+      process.env.REACT_APP_SECRET_KEY,
+    ).toString();
+    try {
+      const signUpRequest = await axios.post(
+        `${process.env.REACT_APP_API_URL}/signup`,
+        {
+          email,
+          nickname,
+          password: encrypted,
+        },
+      );
+      console.log(signUpRequest);
+    } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data.message);
+      }
+    }
   };
 
   return (
     <AuthLayout>
       <FormContainer>
-        <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             {...register('email', {
               required: '이메일은 필수 입력 사항입니다',
@@ -64,7 +83,26 @@ const SignUp = () => {
             placeholder='비밀번호'
           />
           <FormError message={errors?.password?.message} />
-          <Button type='submit' value={'가입'} />
+          <Input
+            {...register('passwordCheck', {
+              required: '비밀번호를 확인해 주세요',
+              validate: {
+                matchPassword: (value) => {
+                  const { password } = getValues();
+                  return password === value || '비밀번호가 일치하지 않습니다';
+                },
+              },
+            })}
+            name='passwordCheck'
+            type='password'
+            placeholder='비밀번호 확인'
+          />
+          <FormError message={errors?.passwordCheck?.message} />
+          <Button
+            type='submit'
+            value={isSubmitting ? '로딩중' : '로그인'}
+            disabled={isSubmitting}
+          />
           <FormError message={errors?.result?.message} />
         </form>
       </FormContainer>

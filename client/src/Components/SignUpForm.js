@@ -11,11 +11,12 @@ const LogInForm = () => {
 
   const onSubmit = async (data) => {
     const { email, password } = data;
+
     const encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(password),
       process.env.REACT_APP_SECRET_KEY,
     ).toString();
-    console.log(encrypted);
+
     try {
       const logInRequest = await axios.post(
         `${process.env.REACT_APP_API_URL}/login`,

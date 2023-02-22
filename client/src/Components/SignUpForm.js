@@ -9,29 +9,7 @@ const LogInForm = () => {
     formState: { isSubmitting, isDirty, errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
-    const { email, password } = data;
-
-    const encrypted = CryptoJS.AES.encrypt(
-      JSON.stringify(password),
-      process.env.REACT_APP_SECRET_KEY,
-    ).toString();
-
-    try {
-      const logInRequest = await axios.post(
-        `${process.env.REACT_APP_API_URL}/login`,
-        {
-          email,
-          password: encrypted,
-        },
-      );
-      console.log(logInRequest);
-    } catch (error) {
-      if (error.response.data) {
-        console.log(error.response.data.message);
-      }
-    }
-  };
+  const onSubmit = async (data) => {};
 
   return (
     <form onSubmit={handleSubmit((data) => onSubmit(data))}>

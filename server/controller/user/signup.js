@@ -24,9 +24,13 @@ module.exports = async (req, res) => {
         .status(409)
         .json({ message: '이미 가입되어 있는 이메일과 닉네임 입니다' });
     } else if (existedEmail === email && existedNickname !== nickname) {
-      return res.status(409).json({ message: '이미 가입되어 이메일 입니다' });
+      return res
+        .status(409)
+        .json({ message: '이미 가입되어 있는 이메일 입니다' });
     } else {
-      return res.status(409).json({ message: '이미 가입되어 닉네임 입니다' });
+      return res
+        .status(409)
+        .json({ message: '이미 가입되어 있는 닉네임 입니다' });
     }
   }
 };

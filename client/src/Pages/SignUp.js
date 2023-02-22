@@ -1,5 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AuthLayout from '../Components/auth/AuthLayout';
 import Button from '../Components/auth/Button';
@@ -8,6 +9,7 @@ import FormError from '../Components/auth/FormError';
 import Input from '../Components/auth/Input';
 
 const SignUp = () => {
+  const [errorFromServer, setErrorFromServer] = useState();
   const {
     register,
     handleSubmit,
@@ -16,6 +18,7 @@ const SignUp = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setErrorFromServer('');
     console.log(data);
     const { email, nickname, password } = data;
     const encrypted = CryptoJS.AES.encrypt(
@@ -33,7 +36,9 @@ const SignUp = () => {
       );
       console.log(signUpRequest);
     } catch (error) {
+      console.log(error);
       if (error.response.data) {
+        setErrorFromServer(error.response.data.message);
         console.log(error.response.data.message);
       }
     }
@@ -103,7 +108,7 @@ const SignUp = () => {
             value={isSubmitting ? '로딩중' : '로그인'}
             disabled={isSubmitting}
           />
-          <FormError message={errors?.result?.message} />
+          {errorFromServer && <FormError message={errorFromServer} />}
         </form>
       </FormContainer>
     </AuthLayout>

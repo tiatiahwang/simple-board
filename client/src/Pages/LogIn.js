@@ -1,7 +1,7 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../Components/auth/AuthLayout';
 import FormContainer from '../Components/auth/FormContainer';
 import Input from '../Components/auth/Input';
@@ -11,6 +11,7 @@ import Seperator from '../Components/auth/Seperator';
 import { FatLink } from '../Components/shared';
 
 const LogIn = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -23,7 +24,6 @@ const LogIn = () => {
       JSON.stringify(password),
       process.env.REACT_APP_SECRET_KEY,
     ).toString();
-    console.log(encrypted);
     try {
       const logInRequest = await axios.post(
         `${process.env.REACT_APP_API_URL}/login`,
@@ -32,7 +32,9 @@ const LogIn = () => {
           password: encrypted,
         },
       );
-      console.log(logInRequest);
+      if (logInRequest.status === 200) {
+        navigate('/');
+      }
     } catch (error) {
       if (error.response.data) {
         console.log(error.response.data.message);

@@ -36,6 +36,7 @@ const SignUp = () => {
         },
       );
       if (signUpRequest.status === 200) {
+        // TODO: 회원가입 완료 모달창 안내 => 버튼 누르면 로그인 이동
         navigate('/signin');
       }
     } catch (error) {

@@ -2,6 +2,7 @@ import axios from 'axios';
 import CryptoJS from 'crypto-js';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../Components/auth/AuthLayout';
 import Button from '../Components/auth/Button';
 import FormContainer from '../Components/auth/FormContainer';
@@ -9,6 +10,7 @@ import FormError from '../Components/auth/FormError';
 import Input from '../Components/auth/Input';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [errorFromServer, setErrorFromServer] = useState();
   const {
     register,
@@ -19,7 +21,6 @@ const SignUp = () => {
 
   const onSubmit = async (data) => {
     setErrorFromServer('');
-    console.log(data);
     const { email, nickname, password } = data;
     const encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(password),
@@ -34,7 +35,9 @@ const SignUp = () => {
           password: encrypted,
         },
       );
-      console.log(signUpRequest);
+      if (signUpRequest.status === 200) {
+        navigate('/signin');
+      }
     } catch (error) {
       console.log(error);
       if (error.response.data) {

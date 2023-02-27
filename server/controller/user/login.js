@@ -8,9 +8,9 @@ module.exports = async (req, res) => {
     return res.status(400).send('필수 항목이 입력되지 않았습니다');
   }
 
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
+
     const existed = await user.findOne({
       where: { email },
       attributes: { exclude: ['deletedAt', 'createdAt', 'updatedAt'] },

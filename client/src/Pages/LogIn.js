@@ -1,5 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../Components/auth/AuthLayout';
@@ -11,6 +12,7 @@ import Seperator from '../Components/auth/Seperator';
 import { FatLink } from '../Components/shared';
 
 const LogIn = () => {
+  const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
   const {
     register,
@@ -19,6 +21,7 @@ const LogIn = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setLoginError('');
     const { email, password } = data;
     const encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(password),
@@ -37,6 +40,7 @@ const LogIn = () => {
       }
     } catch (error) {
       if (error.response.data) {
+        setLoginError(error.response.data.message);
         console.log(error.response.data.message);
       }
     }
@@ -83,7 +87,7 @@ const LogIn = () => {
             value={isSubmitting ? '로딩중' : '로그인'}
             disabled={isSubmitting}
           />
-          <FormError message={errors?.result?.message} />
+          <FormError message={loginError} />
         </form>
         <Seperator />
         <FatLink>

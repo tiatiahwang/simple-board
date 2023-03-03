@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -20,6 +21,8 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname + '/public')));
+
 app.use(
   cors({
     origin: CLIENT_URL,

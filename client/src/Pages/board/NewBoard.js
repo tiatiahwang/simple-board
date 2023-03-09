@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useRef, useState } from 'react';
 import QuillEditor from '../../Components/QuillEditor';
 
@@ -6,12 +7,15 @@ const NewBoard = () => {
   const quillRef = useRef();
 
   const handleSubmit = async () => {
-    const description = quillRef.current.getEditor().getText(); //태그를 제외한 순수 text만을 받아온다. 검색기능을 구현하지 않을 거라면 굳이 text만 따로 저장할 필요는 없다.
-    if (description.trim() === '') {
-      alert('내용을 입력해주세요.');
-      return;
+    console.log(htmlContent);
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_URL}/newboard`,
+        htmlContent,
+      );
+    } catch (e) {
+      console.log(e);
     }
-    console.log(description);
   };
 
   return (

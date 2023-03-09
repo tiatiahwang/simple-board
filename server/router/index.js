@@ -24,5 +24,6 @@ const upload = multer({
 router.post('/login', user.login);
 router.post('/signup', user.signup);
 router.post('/uploadimg', upload.single('image'), post.uploadimg);
+router.post('/newboard', post.newboard);
 
 module.exports = router;
